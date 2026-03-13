@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__claude_ai_Descript__get_job",
+      "Bash(python3:*)"
+    ]
+  }
+}

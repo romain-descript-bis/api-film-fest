@@ -1,0 +1,8 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install --no-audit --prefer-offline && npm run install:bins && npm run build"
+
+[deploy]
+startCommand = "node dist/server/index.js"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3

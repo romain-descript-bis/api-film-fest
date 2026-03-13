@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📺 TV Blind Test</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <span style="font-size:1.6rem">📺</span>
+    <div>
+      <h1>TV Blind Test</h1>
+      <div class="tagline">Can you name that opening theme?</div>
+    </div>
+    <button class="btn btn-ghost" id="btn-reset-global" style="margin-left:auto;font-size:0.8rem;opacity:0.6" title="Start over">↺ Reset</button>
+  </header>
+
+  <!-- ── View 1: Decade Selection ── -->
+  <section class="view active" id="view-decades">
+    <h2>Pick your decade(s)</h2>
+    <h3>Select one or more eras to draw shows from</h3>
+    <div class="decade-grid" id="decade-grid">
+      <div class="decade-card" data-decade="50s"><div class="decade-label">50s</div><div class="decade-sub">1950–1959</div></div>
+      <div class="decade-card" data-decade="60s"><div class="decade-label">60s</div><div class="decade-sub">1960–1969</div></div>
+      <div class="decade-card" data-decade="70s"><div class="decade-label">70s</div><div class="decade-sub">1970–1979</div></div>
+      <div class="decade-card" data-decade="80s"><div class="decade-label">80s</div><div class="decade-sub">1980–1989</div></div>
+      <div class="decade-card" data-decade="90s"><div class="decade-label">90s</div><div class="decade-sub">1990–1999</div></div>
+      <div class="decade-card" data-decade="00s"><div class="decade-label">00s</div><div class="decade-sub">2000–2009</div></div>
+      <div class="decade-card" data-decade="10s"><div class="decade-label">10s</div><div class="decade-sub">2010–2019</div></div>
+    </div>
+    <div>
+      <button class="btn btn-primary" id="btn-goto-shows" disabled>Let's Go →</button>
+    </div>
+  </section>
+
+  <!-- ── View 2: Show Selection ── -->
+  <section class="view" id="view-shows">
+    <h2>Pick your shows</h2>
+    <div class="toolbar">
+      <button class="btn btn-ghost" id="btn-back-decades">← Back</button>
+      <button class="btn btn-primary" id="btn-goto-music" disabled style="margin-left:auto">Start the Hunt →</button>
+    </div>
+    <div class="selection-bar" id="selection-bar">
+      <div class="selection-count" id="selection-count">
+        <span id="selection-num">0</span> <span class="selection-label">selected</span>
+        <span class="selection-max">(up to 10)</span>
+      </div>
+      <div class="selection-pills" id="selection-pills"></div>
+      <button class="btn btn-ghost selection-clear hidden" id="btn-clear-shows" style="font-size:0.8rem">Clear all</button>
+    </div>
+    <input type="search" id="shows-search" placeholder="Search shows…" autocomplete="off" style="width:100%;padding:0.6rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.95rem;margin-bottom:1rem">
+    <div class="loading-row hidden" id="shows-loading">
+      <div class="spinner"></div>
+      <span>Loading shows from TMDB…</span>
+    </div>
+    <div class="show-grid" id="show-grid"></div>
+    <div style="display:flex;justify-content:center;padding:1.5rem 0">
+      <button class="btn btn-ghost hidden" id="btn-load-more">Load more shows ↓</button>
+    </div>
+  </section>
+
+  <!-- ── View 3: Music Search ── -->
+  <section class="view" id="view-music">
+    <h2>Find the right track</h2>
+    <div class="toolbar">
+      <h3 id="music-subtitle">Searching YouTube for opening themes…</h3>
+      <button class="btn btn-ghost" id="btn-back-shows">← Back</button>
+      <button class="btn btn-primary" id="btn-goto-compose" disabled style="margin-left:auto">Compose Blind Test →</button>
+    </div>
+    <div class="music-grid" id="music-grid"></div>
+  </section>
+
+  <!-- ── View 4: Composing ── -->
+  <section class="view" id="view-compose">
+    <h2>Building your blind test…</h2>
+    <h3>Composing your video via the Descript API</h3>
+    <ul class="progress-list" id="progress-list"></ul>
+    <div style="margin-top:1rem">
+      <button class="btn btn-ghost hidden" id="btn-restart-composition">↺ Restart composition</button>
+    </div>
+  </section>
+
+  <!-- ── View 5: Done ── -->
+  <section class="view" id="view-done">
+    <div class="done-box">
+      <div style="font-size:3rem; margin-bottom:1rem">🎬</div>
+      <h2>Your blind test is ready!</h2>
+      <p>Open it in Descript, export, and enjoy game night!</p>
+      <div>
+        <a class="done-link" id="done-link" href="#" target="_blank">
+          <span>Open in Descript</span> <span>↗</span>
+        </a>
+      </div>
+      <button class="btn btn-primary" id="btn-restart">Make another one!</button>
+    </div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
