@@ -370,10 +370,10 @@ function updateMusicCard(show) {
     <img class="yt-thumbnail" src="${result.thumbnail}" alt="" onerror="this.style.display='none'">
     <div class="section-selector" id="section-${show.id}">
       <label>
-        <span>Start at: <strong id="start-label-${show.id}">${ms.startSeconds}s</strong></span>
+        <span>Start at: <strong id="start-label-${show.id}">${ms.startSeconds.toFixed(1)}s</strong></span>
         <span>Duration: 15s clip</span>
       </label>
-      <input type="range" id="start-range-${show.id}" min="0" max="${Math.max(0, (result.duration || 180) - 15)}" value="${ms.startSeconds}" step="1">
+      <input type="range" id="start-range-${show.id}" min="0" max="${Math.max(0, (result.duration || 180) - 15)}" value="${ms.startSeconds}" step="0.1">
     </div>
     <audio controls id="audio-${show.id}" src="/api/music/preview?videoId=${encodeURIComponent(result.videoId)}&startSeconds=${ms.startSeconds}"></audio>
     <div class="card-actions">
@@ -402,7 +402,7 @@ function updateMusicCard(show) {
 
   range.addEventListener('input', () => {
     ms.startSeconds = Number(range.value);
-    label.textContent = `${ms.startSeconds}s`;
+    label.textContent = `${ms.startSeconds.toFixed(1)}s`;
   });
 
   range.addEventListener('change', () => {
