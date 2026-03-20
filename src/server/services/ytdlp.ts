@@ -13,6 +13,23 @@ const FFMPEG_BIN = path.join(process.cwd(), 'bin', process.platform === 'win32' 
 const JS_RUNTIME_FLAG = fs.existsSync(DENO_BIN) ? [`--js-runtimes`, `deno:${DENO_BIN}`] : [];
 const FFMPEG_FLAG = fs.existsSync(FFMPEG_BIN) ? [`--ffmpeg-location`, FFMPEG_BIN] : [];
 
+// YouTube cookies — written from YOUTUBE_COOKIES env var to a temp file once at startup,
+// or loaded from a local cookies.txt file (gitignored) for dev.
+function getCookiesFlag(): string[] {
+  const localFile = path.join(process.cwd(), 'cookies.txt');
+  if (fs.existsSync(localFile)) return ['--cookies', localFile];
+
+  const content = process.env.YOUTUBE_COOKIES;
+  if (!content) return [];
+
+  const tmp = path.join(process.cwd(), 'downloads', '.yt-cookies.txt');
+  fs.mkdirSync(path.dirname(tmp), { recursive: true });
+  fs.writeFileSync(tmp, content, 'utf8');
+  return ['--cookies', tmp];
+}
+
+const COOKIES_FLAG = getCookiesFlag();
+
 export interface YtSearchResult {
   videoId: string;
   title: string;
@@ -25,6 +42,7 @@ export async function searchYoutube(query: string, maxResults = 3): Promise<YtSe
   const searchUrl = `ytsearch${maxResults}:${query}`;
   const { stdout } = await execFileAsync(BIN, [
     ...JS_RUNTIME_FLAG,
+    ...COOKIES_FLAG,
     '--dump-json',
     '--no-download',
     '--flat-playlist',
@@ -65,6 +83,7 @@ export async function downloadAudio(videoId: string): Promise<string> {
   await execFileAsync(BIN, [
     ...JS_RUNTIME_FLAG,
     ...FFMPEG_FLAG,
+    ...COOKIES_FLAG,
     '-x',
     '--audio-format', 'mp3',
     '--audio-quality', '5',
