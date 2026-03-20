@@ -7,9 +7,11 @@ const execFileAsync = promisify(execFile);
 
 const BIN = path.join(process.cwd(), 'bin', process.platform === 'win32' ? 'yt-dlp.exe' : 'yt-dlp');
 const DENO_BIN = path.join(process.cwd(), 'bin', process.platform === 'win32' ? 'deno.exe' : 'deno');
+const FFMPEG_BIN = path.join(process.cwd(), 'bin', process.platform === 'win32' ? 'ffmpeg.exe' : 'ffmpeg');
 
-// Point yt-dlp at our bundled deno via explicit flag (env var no longer sufficient in newer yt-dlp)
+// Point yt-dlp at our bundled deno and ffmpeg via explicit flags
 const JS_RUNTIME_FLAG = fs.existsSync(DENO_BIN) ? [`--js-runtimes`, `deno:${DENO_BIN}`] : [];
+const FFMPEG_FLAG = fs.existsSync(FFMPEG_BIN) ? [`--ffmpeg-location`, FFMPEG_BIN] : [];
 
 export interface YtSearchResult {
   videoId: string;
@@ -62,6 +64,7 @@ export async function downloadAudio(videoId: string): Promise<string> {
   const url = `https://www.youtube.com/watch?v=${videoId}`;
   await execFileAsync(BIN, [
     ...JS_RUNTIME_FLAG,
+    ...FFMPEG_FLAG,
     '-x',
     '--audio-format', 'mp3',
     '--audio-quality', '5',
