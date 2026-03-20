@@ -105,7 +105,7 @@ router.post('/', async (req: Request, res: Response) => {
   }
 
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-  const { projectId: resumeProjectId, mediaImported: resumeMediaImported } = req.body ?? {};
+  const { projectId: resumeProjectId, mediaImported: resumeMediaImported, apiKey } = req.body ?? {};
 
   const decades = manifest.decades.join(', ');
   const decadeStyle = buildDecadeStyle(manifest.decades);
@@ -130,10 +130,10 @@ router.post('/', async (req: Request, res: Response) => {
     } else {
       send({ type: 'step', id: 'create', label: 'Creating Descript project…' });
       console.log(`[descript-compose] creating project "${projectName}"`);
-      const r = await importMedia({ projectName, addMedia: {} });
+      const r = await importMedia({ projectName, addMedia: {}, apiKey });
       projectId = r.projectId;
       projectUrl = r.projectUrl;
-      await pollJob(r.jobId, label => send({ type: 'progress', label }));
+      await pollJob(r.jobId, label => send({ type: 'progress', label }), 3000, apiKey);
       send({ type: 'step_done', id: 'create' });
       send({ type: 'project_created', projectId });
       console.log(`[descript-compose] project created — ${projectId}`);
@@ -146,9 +146,9 @@ router.post('/', async (req: Request, res: Response) => {
     } else {
       send({ type: 'step', id: 'import', label: `Importing ${totalAssets} assets (audio + posters)…` });
       console.log(`[descript-compose] importing assets into ${projectId}`);
-      const r = await importMedia({ projectId, addMedia });
+      const r = await importMedia({ projectId, addMedia, apiKey });
       projectUrl = r.projectUrl;
-      const importJob = await pollJob(r.jobId, label => send({ type: 'progress', label }));
+      const importJob = await pollJob(r.jobId, label => send({ type: 'progress', label }), 3000, apiKey);
       send({ type: 'step_done', id: 'import' });
       send({ type: 'media_imported' });
       console.log(`[descript-compose] import done`);
@@ -157,9 +157,9 @@ router.post('/', async (req: Request, res: Response) => {
     // ── Step 3: Compose with agent ────────────────────────────────────────────
     send({ type: 'step', id: 'compose', label: 'Composing blind test video with AI…' });
     console.log(`[descript-compose] running agent on ${projectId}`);
-    const { jobId: composeJobId, projectUrl: agentUrl } = await agentEdit({ projectId, prompt });
+    const { jobId: composeJobId, projectUrl: agentUrl } = await agentEdit({ projectId, prompt, apiKey });
     projectUrl = agentUrl || projectUrl;
-    const composeJob = await pollJob(composeJobId, label => send({ type: 'progress', label }), 4000);
+    const composeJob = await pollJob(composeJobId, label => send({ type: 'progress', label }), 4000, apiKey);
     send({ type: 'step_done', id: 'compose' });
     console.log(`[descript-compose] agent done — ${composeJob.result?.agent_response?.slice(0, 80)}…`);
 

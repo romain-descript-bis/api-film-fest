@@ -30,7 +30,12 @@
       <div class="decade-card" data-decade="00s"><div class="decade-label">00s</div><div class="decade-sub">2000–2009</div></div>
       <div class="decade-card" data-decade="10s"><div class="decade-label">10s</div><div class="decade-sub">2010–2019</div></div>
     </div>
-    <div>
+    <div style="margin-top:1.5rem">
+      <label style="display:block;font-size:0.8rem;opacity:0.6;margin-bottom:0.4rem" for="descript-api-key">Descript API key <span style="font-style:italic">(optional — overrides server default)</span></label>
+      <input type="password" id="descript-api-key" placeholder="dx_bearer_…" autocomplete="off"
+        style="width:100%;max-width:420px;padding:0.5rem 0.9rem;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:0.9rem;font-family:monospace">
+    </div>
+    <div style="margin-top:1rem">
       <button class="btn btn-primary" id="btn-goto-shows" disabled>Let's Go →</button>
     </div>
   </section>

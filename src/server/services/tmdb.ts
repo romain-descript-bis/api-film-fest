@@ -38,7 +38,7 @@ export async function fetchShowsByDecades(decades: string[]): Promise<TmdbShow[]
 
   const all: TmdbShow[] = [];
   let page = 1;
-  const maxPages = 3; // ~60 results
+  const maxPages = 10; // ~200 results
 
   while (page <= maxPages) {
     const params = new URLSearchParams({

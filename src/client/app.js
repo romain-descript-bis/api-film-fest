@@ -32,6 +32,7 @@ function saveCookie() {
     pu: state.projectUrl,
     dpid: state.descriptProjectId,
     dmi: state.descriptMediaImported,
+    dak: state.descriptApiKey || undefined,
   };
 
   const encoded = encodeURIComponent(JSON.stringify(payload));
@@ -67,6 +68,7 @@ const state = {
   projectUrl: null,          // Descript project URL after composition completes
   descriptProjectId: null,   // Set after step 1 — allows resuming from step 2
   descriptMediaImported: false, // Set after step 2 — allows resuming from step 3
+  descriptApiKey: '',        // Optional override — entered on the decades page
 };
 
 // ── View Router ─────────────────────────────────────────────────────────────
@@ -91,6 +93,11 @@ document.querySelectorAll('.decade-card').forEach(card => {
     document.getElementById('btn-goto-shows').disabled = state.selectedDecades.size === 0;
     saveCookie();
   });
+});
+
+document.getElementById('descript-api-key').addEventListener('input', (e) => {
+  state.descriptApiKey = e.target.value.trim();
+  saveCookie();
 });
 
 document.getElementById('btn-goto-shows').addEventListener('click', () => {
@@ -625,6 +632,7 @@ function startDescriptCompose(_setStep, list) {
     body: JSON.stringify({
       projectId: state.descriptProjectId,
       mediaImported: state.descriptMediaImported,
+      apiKey: state.descriptApiKey || undefined,
     }),
   })
     .then(res => {
@@ -783,6 +791,10 @@ document.getElementById('btn-reset-global').addEventListener('click', () => {
   state.projectUrl = saved.pu || null;
   state.descriptProjectId = saved.dpid || null;
   state.descriptMediaImported = saved.dmi || false;
+  state.descriptApiKey = saved.dak || '';
+  if (state.descriptApiKey) {
+    document.getElementById('descript-api-key').value = state.descriptApiKey;
+  }
 
   // Navigate to the saved view
   const view = saved.v || 'view-decades';
