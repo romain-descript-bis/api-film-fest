@@ -94,6 +94,7 @@ router.get('/preview', async (req: Request, res: Response) => {
     res.setHeader('Accept-Ranges', 'bytes');
     fs.createReadStream(trimmedFile).pipe(res);
   } catch (err: any) {
+    console.error(`[music/preview] error: ${err.message}`);
     res.status(500).json({ error: err.message });
   }
 });
