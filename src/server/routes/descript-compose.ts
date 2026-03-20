@@ -135,7 +135,7 @@ router.post('/', async (req: Request, res: Response) => {
       projectUrl = r.projectUrl;
       await pollJob(r.jobId, label => send({ type: 'progress', label }), 3000, apiKey);
       send({ type: 'step_done', id: 'create' });
-      send({ type: 'project_created', projectId });
+      send({ type: 'project_created', projectId, projectUrl });
       console.log(`[descript-compose] project created — ${projectId}`);
     }
 

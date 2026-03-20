@@ -677,7 +677,14 @@ function handleDescriptEvent(event, setStep, setProgress, setActive) {
 
   } else if (event.type === 'project_created') {
     state.descriptProjectId = event.projectId;
+    state.projectUrl = event.projectUrl;
     saveCookie();
+    const link = document.getElementById('compose-done-link');
+    const box = document.getElementById('compose-done-box');
+    if (link && event.projectUrl) {
+      link.href = event.projectUrl;
+      box.classList.remove('hidden');
+    }
 
   } else if (event.type === 'media_imported') {
     state.descriptMediaImported = true;
@@ -692,7 +699,10 @@ function handleDescriptEvent(event, setStep, setProgress, setActive) {
     setStep(event.id, 'done', event.detail);
 
   } else if (event.type === 'done') {
-    showDone(event.projectUrl);
+    state.projectUrl = event.projectUrl || state.projectUrl;
+    saveCookie();
+    const link = document.getElementById('compose-done-link');
+    if (link && state.projectUrl) link.href = state.projectUrl;
 
   } else if (event.type === 'error') {
     const active = DESCRIPT_STEPS.find(s =>
@@ -791,6 +801,11 @@ document.getElementById('btn-reset-global').addEventListener('click', () => {
   state.projectUrl = saved.pu || null;
   state.descriptProjectId = saved.dpid || null;
   state.descriptMediaImported = saved.dmi || false;
+  if (state.projectUrl) {
+    const link = document.getElementById('compose-done-link');
+    const box = document.getElementById('compose-done-box');
+    if (link) { link.href = state.projectUrl; box.classList.remove('hidden'); }
+  }
   state.descriptApiKey = saved.dak || '';
   if (state.descriptApiKey) {
     document.getElementById('descript-api-key').value = state.descriptApiKey;
